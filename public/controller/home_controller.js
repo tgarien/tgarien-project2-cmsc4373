@@ -1,4 +1,4 @@
-export function onSubmitCalcForm(e){
+export function onSubmitCreateForm(e){
     e.preventDefault();
     const nStr = e.target.number.value;
     const n = parseInt(nStr);
