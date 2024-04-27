@@ -19,7 +19,6 @@ export function routing(pathname, hash){
         }else{
             route.page();
         }
-        route.page();
     }else{
         routes[0].page();
     }

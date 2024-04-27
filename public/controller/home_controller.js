@@ -1,13 +1,39 @@
-export function onSubmitCreateForm(e){
+import { InventoryItem } from "../model/InventoryItem.js";
+import { currentUser } from "./firebase_auth.js";
+import { addInventoryItem } from "./firestore_controller.js";
+import { DEV } from "../model/constants.js";
+import { buildCard } from "../view/home_page.js";
+
+export async function onSubmitCreateForm(e){
     e.preventDefault();
-    const nStr = e.target.number.value;
-    const n = parseInt(nStr);
-    const ul = document.getElementById('display');
-    const eqString = `
-        ${n} x ${n} = ${n*n}
-    `;
-    const li = document.createElement('li');
-    li.textContent = eqString;
-    ul.appendChild(li);
-    e.target.number.value = ''; // clear input field
+    const title = (e.target.title.value).toLowerCase();
+    const uid = currentUser.uid;
+    const quantity = 1; //maybe this needs to be in constructor?
+    const timestamp = Date.now();
+    const inventoryItem = new InventoryItem({title, uid, quantity, timestamp});
+
+    const buttonLabel = e.submitter.innerHTML;
+    e.submitter.disabled = true;
+    e.submitter.innerHTML = 'Wait...';
+
+    let docId;
+    try {
+        docId = await addInventoryItem(inventoryItem);
+        inventoryItem.set_docId(docId);
+    }catch(e){
+        if(DEV) console.log('failed to create: ', e);
+        alert('Failed to create:' + JSON.stringify(e));
+        
+        e.submitter.innerHTML = buttonLabel;
+        e.submitter.disabled = false;
+        return;
+    }
+    
+    e.submitter.innerHTML = buttonLabel;
+    e.submitter.disabled = false;
+
+    const container = document.getElementById('inventory-container');
+    container.prepend(buildCard(inventoryItem));
+    e.target.title.value = '';
+
 }
