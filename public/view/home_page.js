@@ -11,6 +11,7 @@ import { DEV } from "../model/constants.js";
 import { getInventoryItemList } from "../controller/firestore_controller.js";
 
 export let inventoryItemList = [];
+export let inventoryItemChanges = [];
 
 export async function homePageView(){
     if(!currentUser){
