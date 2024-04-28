@@ -1,9 +1,16 @@
 import { currentUser } from "../controller/firebase_auth.js";
 import { root } from "./elements.js";
 import { protectedView } from "./protected_view.js";
-import { onSubmitCreateForm } from "../controller/home_controller.js";
+import { onSubmitCreateForm,
+            onClickMinus,
+            onClickPlus,
+            onClickUpdate,
+            onClickCancel,
+ } from "../controller/home_controller.js";
 import { DEV } from "../model/constants.js";
 import { getInventoryItemList } from "../controller/firestore_controller.js";
+
+export let inventoryItemList = [];
 
 export async function homePageView(){
     if(!currentUser){
@@ -23,8 +30,7 @@ export async function homePageView(){
     root.innerHTML = '';
     root.appendChild(divWrapper);
 
-    /// read all existing titles
-    let inventoryItemList;
+    /// read all existing items
     try {
         inventoryItemList = await getInventoryItemList(currentUser.uid);
     } catch (e) {
@@ -64,5 +70,22 @@ export function buildCard(inventoryItem) {
     `;
     const Buttons = div.querySelectorAll('button');
     
+    Buttons.forEach(button =>{
+        switch(button.name){
+            case 'minus':
+                button.onclick = onClickMinus;
+                break;
+            case 'plus':
+                button.onclick = onClickPlus;
+                break;
+            case 'update':
+                button.onclick = onClickUpdate;
+                break;
+            case 'cancel':
+                button.onclick = onClickCancel;
+                break;
+        }
+    });
+
     return div;
 }
