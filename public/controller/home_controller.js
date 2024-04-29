@@ -27,6 +27,7 @@ export async function onSubmitCreateForm(e){
         inventoryItem.set_docId(docId);
         inventoryItemList.splice(0,0,inventoryItem);
         oldInventoryItemValues.splice(0,0,inventoryItem);
+        e.target.title.value = ''; 
     }catch(e){
         if(DEV) console.log('failed to create: ', e);
         alert('Failed to create:' + JSON.stringify(e));
