@@ -1,8 +1,8 @@
 import { InventoryItem } from "../model/InventoryItem.js";
 import { currentUser } from "./firebase_auth.js";
-import { addInventoryItem } from "./firestore_controller.js";
+import { addInventoryItem, deleteInventoryItem } from "./firestore_controller.js";
 import { DEV } from "../model/constants.js";
-import { buildCard, inventoryItemList, inventoryListView, oldInventoryItemValues } from "../view/home_page.js";
+import { buildCard, inventoryItemList, inventoryListView, oldInventoryItemValues, removeFromInventoryList } from "../view/home_page.js";
 
 export async function onSubmitCreateForm(e){
     e.preventDefault();
@@ -34,6 +34,7 @@ export async function onSubmitCreateForm(e){
 
     const container = document.getElementById('inventory-container');
     container.prepend(buildCard(inventoryItem));
+    //this should just call inventory listview()
     e.target.title.value = '';
 
 }
@@ -41,9 +42,11 @@ export async function onSubmitCreateForm(e){
 export function onClickMinus(e){
     var inventoryitemID = e.target.parentElement.parentElement.id;
     var item = inventoryItemList.find(t=>t.docId === inventoryitemID); //make a copy of OG value for cancel?
-    item.quantity--;
+    
     if(item.quantity == 0){
-        e.target.disabled = true;
+        alert('Cannot reduce Item Count below zero')
+    }else{
+        item.quantity--;
     }
     inventoryListView();
     console.log(item);
@@ -71,7 +74,21 @@ export function onClickCancel(e){
 export function onClickUpdate(e){
     var inventoryitemID = e.target.parentElement.parentElement.id;
     var item = inventoryItemList.find(t=>t.docId === inventoryitemID);
-    //save to firebase
+
+    if(item.quantity == 0){
+        if(confirm('Are you sure you want to delete this item?')){
+            console.log('deleted');
+            deleteInventoryItem(item);
+            removeFromInventoryList(item);
+        }else{
+            console.log('cancelled');
+            return;
+        }
+        
+    }else{
+        alert('Quantity updated!')
+        // update item in olditem array
+        //save to firebase
+    }
     inventoryListView();
-    console.log(item);
 }

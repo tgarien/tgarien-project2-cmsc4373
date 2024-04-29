@@ -35,3 +35,11 @@ export async function getInventoryItemList(uid){
     });
     return itemList;
 }
+
+export async function deleteInventoryItem(){
+
+}
+
+export async function updateInventoryItem(){
+    
+}

@@ -13,6 +13,24 @@ import { getInventoryItemList } from "../controller/firestore_controller.js";
 export let inventoryItemList = [];
 export let oldInventoryItemValues = [];
 
+export function removeFromInventoryList(item){
+    const index = inventoryItemList.findIndex(p => p.docId == item.docId);
+    if(index >=0 )
+        inventoryItemList.splice(index,1);
+
+    index = oldInventoryItemValues.findIndex(p => p.docId == item.docId);
+    if(index >=0 )
+        oldInventoryItemValues.splice(index,1);
+}
+
+export function reorderinventoryList(){
+    inventoryItemList.sort((a, b)=>{
+        if(a.title < b.title) return 1;
+        else if (a.title > b.title) return -1;
+        else return 0;
+    })
+}
+
 export async function homePageView(){
     if(!currentUser){
         root.innerHTML = await protectedView();
