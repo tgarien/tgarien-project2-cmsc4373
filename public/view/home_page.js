@@ -14,7 +14,7 @@ export let inventoryItemList = [];
 export let oldInventoryItemValues = [];
 
 export function removeFromInventoryList(item){
-    const index = inventoryItemList.findIndex(p => p.docId == item.docId);
+    let index = inventoryItemList.findIndex(p => p.docId == item.docId);
     if(index >=0 )
         inventoryItemList.splice(index,1);
 
@@ -25,8 +25,8 @@ export function removeFromInventoryList(item){
 
 export function reorderinventoryList(){
     inventoryItemList.sort((a, b)=>{
-        if(a.title < b.title) return 1;
-        else if (a.title > b.title) return -1;
+        if(a.title > b.title) return 1;
+        else if (a.title < b.title) return -1;
         else return 0;
     })
 }

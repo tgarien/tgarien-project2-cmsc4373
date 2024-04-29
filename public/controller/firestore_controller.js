@@ -36,10 +36,12 @@ export async function getInventoryItemList(uid){
     return itemList;
 }
 
-export async function deleteInventoryItem(){
-
+export async function deleteInventoryItem(docId){
+    const docRef = doc(db, INVENTORY_COLLECTION, docId);
+    await deleteDoc(docRef);
 }
 
-export async function updateInventoryItem(){
-    
+export async function updateInventoryItem(docId, update){
+    const docRef = doc(db, INVENTORY_COLLECTION, docId);
+    await updateDoc(docRef, update);
 }
