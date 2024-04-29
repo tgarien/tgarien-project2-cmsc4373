@@ -2,7 +2,7 @@ import { InventoryItem } from "../model/InventoryItem.js";
 import { currentUser } from "./firebase_auth.js";
 import { addInventoryItem } from "./firestore_controller.js";
 import { DEV } from "../model/constants.js";
-import { buildCard, inventoryItemList } from "../view/home_page.js";
+import { buildCard, inventoryItemList, inventoryListView, oldInventoryItemValues } from "../view/home_page.js";
 
 export async function onSubmitCreateForm(e){
     e.preventDefault();
@@ -42,6 +42,10 @@ export function onClickMinus(e){
     var inventoryitemID = e.target.parentElement.parentElement.id;
     var item = inventoryItemList.find(t=>t.docId === inventoryitemID); //make a copy of OG value for cancel?
     item.quantity--;
+    if(item.quantity == 0){
+        e.target.disabled = true;
+    }
+    inventoryListView();
     console.log(item);
 }
 
@@ -49,17 +53,25 @@ export function onClickPlus(e){
     var inventoryitemID = e.target.parentElement.parentElement.id;
     var item = inventoryItemList.find(t=>t.docId === inventoryitemID);
     item.quantity++;
+    inventoryListView();
     console.log(item);
 }
 
 export function onClickCancel(e){
     var inventoryitemID = e.target.parentElement.parentElement.id;
     var item = inventoryItemList.find(t=>t.docId === inventoryitemID);
+    var olditem = oldInventoryItemValues.find(t=>t.docId === inventoryitemID);
+
+    item.quantity = olditem.quantity;
+    //revert to saved value
+    inventoryListView();
     console.log(item);
 }
 
 export function onClickUpdate(e){
     var inventoryitemID = e.target.parentElement.parentElement.id;
     var item = inventoryItemList.find(t=>t.docId === inventoryitemID);
+    //save to firebase
+    inventoryListView();
     console.log(item);
 }

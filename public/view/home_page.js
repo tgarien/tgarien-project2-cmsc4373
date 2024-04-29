@@ -11,7 +11,7 @@ import { DEV } from "../model/constants.js";
 import { getInventoryItemList } from "../controller/firestore_controller.js";
 
 export let inventoryItemList = [];
-export let inventoryItemChanges = [];
+export let oldInventoryItemValues = [];
 
 export async function homePageView(){
     if(!currentUser){
@@ -35,20 +35,24 @@ export async function homePageView(){
     try {
         inventoryItemList = await getInventoryItemList(currentUser.uid);
     } catch (e) {
-        if (DEV) console.log('failed to get title list', e);
-        alert('Failed to get title list: ' + JSON.stringify(e));
+        if (DEV) console.log('failed to get item list', e);
+        alert('Failed to get item list: ' + JSON.stringify(e));
         return;
     }
 
     if(inventoryItemList.length == 0){
         homeRoot.innerHTML = '<h2>No Inventory Items have been added!</h2>';
         return;
+    }else{
+        oldInventoryItemValues = JSON.parse(JSON.stringify(inventoryItemList));
     }
 
-    const container = divWrapper.querySelector('#inventory-container');
-    inventoryItemList.forEach(title => {
-        container.appendChild(buildCard(title));
-    });
+    inventoryListView();
+
+    // const container = divWrapper.querySelector('#inventory-container');
+    // inventoryItemList.forEach(title => {
+    //     container.appendChild(buildCard(title));
+    // });
 
 
 }
@@ -89,4 +93,12 @@ export function buildCard(inventoryItem) {
     });
 
     return div;
+}
+
+export function inventoryListView(){
+    const container = document.querySelector('#inventory-container');
+    container.innerHTML = '';
+    inventoryItemList.forEach(title => {
+        container.appendChild(buildCard(title));
+    });
 }
