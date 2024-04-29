@@ -26,7 +26,7 @@ export async function onSubmitCreateForm(e){
         docId = await addInventoryItem(inventoryItem);
         inventoryItem.set_docId(docId);
         inventoryItemList.splice(0,0,inventoryItem);
-        oldInventoryItemValues.splice(0,0,inventoryItem);
+        oldInventoryItemValues.splice(0,0,new InventoryItem({title, uid, quantity, timestamp},docId));
         e.target.title.value = ''; 
     }catch(e){
         if(DEV) console.log('failed to create: ', e);
@@ -59,7 +59,6 @@ export function onClickMinus(e){
         item.quantity--;
     }
     inventoryListView();
-    console.log(item);
 }
 
 export function onClickPlus(e){
@@ -67,7 +66,6 @@ export function onClickPlus(e){
     var item = inventoryItemList.find(t=>t.docId === inventoryitemID);
     item.quantity++;
     inventoryListView();
-    console.log(item);
 }
 
 export function onClickCancel(e){
